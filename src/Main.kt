@@ -1,6 +1,13 @@
 import kotlin.random.Random
+import kotlin.random.nextInt
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
-class Human{
+open class Human{
+
+    protected val mutex = Mutex()
+
     var name: String = ""
     var age: Int = 0
     val velocity: Int = Random.nextInt(0, 5)
@@ -13,41 +20,84 @@ class Human{
         age = _age
     }
 
-    fun move(){
+    open fun move(){
 
-        val rnd = velocity * Random.nextInt(-1, 2)
-        val rnd2 = velocity * Random.nextInt(-1, 2)
+        val NewThread = Thread{
 
-        x += rnd
-        y += rnd2
+            runBlocking {
+                mutex.withLock {
+                    val rnd = velocity * Random.nextInt(-1, 2)
+                    val rnd2 = velocity * Random.nextInt(-1, 2)
 
-        println("$name is moved {$x, $y}")
+                    x += rnd
+                    y += rnd2
+                }
+            }
+
+            println("$name is moved {$x, $y}")
+
+        }
+        NewThread.start()
+
+    }
+}
+
+class Driver(_name: String, _age: Int) : Human(_name, _age){
+
+    val dir = Random.nextBoolean()
+    val xory = Random.nextBoolean()
+
+    override fun move(){
+
+        val NewThread = Thread{
+
+            runBlocking {
+                mutex.withLock {
+                    var intdir = 0;
+                    if(dir){
+                        intdir = 1;
+                    } else{
+                        intdir = -1;
+                    }
+
+                    if(xory){
+                        val rnd = velocity * velocity * intdir
+                        x += rnd
+                    } else{
+                        val rnd2 = velocity * velocity * intdir
+                        y += rnd2
+                    }
+                }
+            }
+
+            println("Driver $name rides {$x, $y}")
+
+        }
+
+        NewThread.start()
 
     }
 }
 
 fun main() {
 
-    val rnd = Random.nextInt(0, 10)
-
     var oleg : Human = Human("Oleg Ivanov", 20)
     oleg.move()
 
     val people = mutableListOf<Human>()
 
-    for (i in 1..26){
+    var alex : Driver = Driver("Alex", 25)
+    for (i in 1..4){
         people.add(Human("Human$i", Random.nextInt(1, 100)))
     }
 
-    val second : Int = 200
+    val second : Int = 10
 
-//    for(i in 1..second){
-//        people[Random.nextInt(0, 26)].move()
-//    }
     for(i in 1..second){
         for(person in people){
             person.move()
         }
+        alex.move()
     }
 
 }
