@@ -1,9 +1,19 @@
 # Android_Programming
 ## Хоробров Георгий Викторович ИКС-433
 
-### Program
-	├─src/
-	│   ├─Main.kt - main of program
-	│   ├─Human.kt - superclass human with func move
-	│   ├─Driver.kt - subclass of human
-	│   ├─Movable.kt - interface with func move and coordiantes
+### MyCalculator
+	├─ src/
+	│  ├─ main/
+	│  │  ├─ cpp/
+	│  │  │  ├─ CMakeLists.txt
+	│  │  │  ├─ native-lib.cpp
+	│  │  │
+	│  │  ├─ java/
+	│  │  │  ├─ Movable - lab3/
+	│  │  │  ├─ com/
+	│  │  │  │  └─ example/
+	│  │  │  │     └─ mycalculator/
+	│  │  │  │        └─ MainActivity.kt
+	│  │  │
+	│  │  ├─ res/		
+
