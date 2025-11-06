@@ -20,23 +20,22 @@
         app:layout_constraintVertical_bias="0.022" />
 
     <LinearLayout
-        android:layout_width="277dp"
+        android:layout_width="346dp"
         android:layout_height="76dp"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playingBar"
-        app:layout_constraintVertical_bias="0.205">
-
+        app:layout_constraintVertical_bias="0.4">
 
         <ImageButton
             android:id="@+id/unlike"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             android:layout_weight="0"
             android:alpha="0.5"
             android:background="@drawable/heart_crossed"
@@ -45,9 +44,9 @@
 
         <ImageButton
             android:id="@+id/btnprev"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="20dp"
             android:layout_weight="0"
             android:background="@null"
             android:rotationY="180"
@@ -66,9 +65,9 @@
 
         <ImageButton
             android:id="@+id/btnnext"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="20dp"
             android:layout_weight="0"
             android:background="@null"
             android:scaleType="centerInside"
@@ -78,12 +77,12 @@
             android:id="@+id/like"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             android:layout_weight="0"
             android:alpha="0.5"
             android:background="@null"
-            android:src="@drawable/heart_empty"
-            android:scaleType="centerInside"/>
+            android:scaleType="centerInside"
+            android:src="@drawable/heart_empty" />
 
     </LinearLayout>
 
@@ -95,46 +94,46 @@
         android:thumbTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.714" />
+        app:layout_constraintVertical_bias="0.7" />
 
     <SeekBar
         android:id="@+id/volume"
-        android:layout_width="276dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="224dp"
+        android:layout_width="320dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="220dp"
         android:progressTint="#DCDCDC"
         android:rotation="270"
         android:thumbTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.313" />
+        app:layout_constraintVertical_bias="0.318" />
 
     <TextView
         android:id="@+id/nameSong"
-        android:layout_width="346dp"
+        android:layout_width="320dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="40dp"
         android:text="NameSong"
         android:textColor="@color/white"
         android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/authorSong"
+        app:layout_constraintBottom_toTopOf="@+id/playingBar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/maxTime"
         android:layout_width="37dp"
         android:layout_height="19dp"
+        android:layout_marginEnd="32dp"
         android:text="00:00"
         android:textColor="@color/white"
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.891"
-        app:layout_constraintStart_toEndOf="@+id/maxTime"
         app:layout_constraintTop_toBottomOf="@+id/playingBar" />
 
     <TextView
@@ -150,20 +149,21 @@
 
     <TextView
         android:id="@+id/authorSong"
-        android:layout_width="346dp"
+        android:layout_width="320dp"
         android:layout_height="25dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:text="AuthourName"
-        android:textColor="#DCDCDC"
+        android:textColor="#a6a6a8"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/playingBar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/songImage"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginTop="40dp"
         android:src="@drawable/music_note"
         app:layout_constraintBottom_toTopOf="@+id/nameSong"

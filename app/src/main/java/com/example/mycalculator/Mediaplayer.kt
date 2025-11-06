@@ -2,6 +2,7 @@ package com.example.mycalculator
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
+import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 
 import java.io.File
@@ -22,6 +23,8 @@ import androidx.core.view.WindowInsetsCompat
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -52,6 +55,9 @@ class Mediaplayer : AppCompatActivity() {
     private lateinit var curTimeSong: TextView
     private lateinit var maxTimeSong: TextView
 
+    private lateinit var seekbarVolume: SeekBar
+    private lateinit var seekbarTime: SeekBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -73,6 +79,9 @@ class Mediaplayer : AppCompatActivity() {
         btnprev = findViewById(R.id.btnprev)
         btnlike = findViewById(R.id.like)
         btnunlike = findViewById(R.id.unlike)
+
+        seekbarVolume = findViewById(R.id.volume)
+        seekbarTime = findViewById(R.id.playingBar)
 
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
             if(isGranted){
@@ -153,9 +162,6 @@ class Mediaplayer : AppCompatActivity() {
         return time
     }
 
-    //TODO seekbarVolume
-    //TODO seekbarMusic
-
     private var timeJob: Job? = null
     private fun playSong(index: Int){
         if(musicPaths.isEmpty()) return
@@ -174,6 +180,9 @@ class Mediaplayer : AppCompatActivity() {
                 mediaPlayer?.setDataSource(currentMusicPath)
                 mediaPlayer?.prepare()
 
+                seekbarTime.max = mediaPlayer?.duration ?: 0
+                seekbarTime.progress = 0
+
                 val uriCurMusicPath = Uri.fromFile(File(currentMusicPath))
                 val songInfo = getTrackInfo(uriCurMusicPath)
                 nameSong.text = songInfo.first
@@ -187,6 +196,7 @@ class Mediaplayer : AppCompatActivity() {
                 timeJob = lifecycleScope.launch {
                     while (isActive && mediaPlayer != null && mediaPlayer!!.isPlaying){
                         curTimeSong.text = getTrackTime(uriCurMusicPath)
+                        seekbarTime.progress = mediaPlayer?.currentPosition ?: 0
                         delay(1000)
                     }
                 }
@@ -212,6 +222,39 @@ class Mediaplayer : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        seekbarVolume.max = maxVolume
+        val currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        seekbarVolume.progress = currVolume
+
+        seekbarVolume.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar,progress: Int, fromUser: Boolean) {
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            }
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+            }
+        })
+
+        seekbarTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar,progress: Int, fromUser: Boolean) {
+                if(fromUser){
+                    val totalSec = progress / 1000;
+                    val min = totalSec / 60
+                    val sec = totalSec % 60
+                    val time =  String.format("%02d:%02d", min, sec)
+                    curTimeSong.text = time
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            }
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                mediaPlayer?.seekTo(seekBar.progress)
+            }
+        })
 
         btnplay.setOnClickListener {
             if(mediaPlayer == null){
