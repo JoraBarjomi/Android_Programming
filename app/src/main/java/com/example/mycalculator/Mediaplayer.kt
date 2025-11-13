@@ -1,5 +1,6 @@
 package com.example.mycalculator
 
+import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.media.AudioManager
@@ -83,17 +84,22 @@ class Mediaplayer : AppCompatActivity() {
         seekbarVolume = findViewById(R.id.volume)
         seekbarTime = findViewById(R.id.playingBar)
 
-        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
-            if(isGranted){
+        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+            val finePermission = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
+            val coarsePermission = permissions[Manifest.permission.READ_MEDIA_AUDIO] ?: false
+            if (finePermission || coarsePermission){
                 findMusicFile()
-                //Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
-            } else{
-                //Toast.makeText(this, "Please grant permission", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Please give permission", Toast.LENGTH_LONG).show()
             }
         }
-        requestPermissionLauncher.launch(READ_EXTERNAL_STORAGE)
-        requestPermissionLauncher.launch(READ_MEDIA_AUDIO )
-
+        requestPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.READ_MEDIA_AUDIO
+            )
+        )
     }
 
     private fun findMusicFile(){

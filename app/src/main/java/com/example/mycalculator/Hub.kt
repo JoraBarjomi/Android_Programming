@@ -3,9 +3,6 @@ package com.example.mycalculator
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.webkit.WebSettings
-import android.webkit.WebView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.SeekBar
@@ -15,9 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.mycalculator.R
 import com.example.mycalculator.databinding.ActivityHubBinding
-import org.w3c.dom.Text
 
 
 class Hub : AppCompatActivity() {
@@ -27,7 +22,7 @@ class Hub : AppCompatActivity() {
     private lateinit var textHub: TextView
     private lateinit var btncalc: Button
     private lateinit var btnmedia: Button
-    private lateinit var btn3: Button
+    private lateinit var btnlocation: Button
     private lateinit var btn4: Button
     private lateinit var btn5: Button
     private lateinit var btn6: Button
@@ -51,7 +46,7 @@ class Hub : AppCompatActivity() {
         textHub = findViewById<TextView>(R.id.hub)
         btncalc = findViewById<Button>(R.id.calculator)
         btnmedia = findViewById<Button>(R.id.mediaplayer)
-        btn3 = findViewById<Button>(R.id.btn3)
+        btnlocation = findViewById<Button>(R.id.location)
         btn4 = findViewById<Button>(R.id.btn4)
         btn5 = findViewById<Button>(R.id.btn5)
         btn6 = findViewById<Button>(R.id.btn6)
@@ -71,18 +66,19 @@ class Hub : AppCompatActivity() {
             val randomIntent = Intent(this, Mediaplayer::class.java)
             startActivity(randomIntent)
         });
+        binding.location.setOnClickListener({
+           val randomIntent = Intent(this, Location::class.java)
+           startActivity(randomIntent)
+        });
 
         themebtn.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 var rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btncalc.setBackgroundColor(rndColor)
                 rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btnmedia.setBackgroundColor(rndColor)
                 rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
-                btn3.setBackgroundColor(rndColor)
+                btnlocation.setBackgroundColor(rndColor)
                 rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btn4.setBackgroundColor(rndColor)
                 rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
@@ -96,6 +92,8 @@ class Hub : AppCompatActivity() {
                 rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 textHub.setTextColor(rndColor)
             }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
         chkBox.setOnClickListener {
             if (chkBox.isChecked){

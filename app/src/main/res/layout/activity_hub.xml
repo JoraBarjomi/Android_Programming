@@ -44,8 +44,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/mediaplayer"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="372dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
             android:text="MediaPlayer"
@@ -53,19 +53,19 @@
             android:textSize="20sp" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn3"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:id="@+id/location"
+            android:layout_width="353dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
-            android:text="Knopka"
+            android:text="Location"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn4"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="315dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
             android:text="Knopka"
@@ -74,8 +74,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn5"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="293dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
             android:text="Knopka"
@@ -84,8 +84,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn6"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="258dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
             android:text="Knopka"
@@ -94,8 +94,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn7"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="221dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
             android:text="Knopka"
@@ -104,8 +104,8 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn8"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="189dp"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/cardview_dark_background"
             android:text="Knopka"
