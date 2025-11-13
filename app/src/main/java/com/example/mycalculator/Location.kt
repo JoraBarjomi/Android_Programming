@@ -120,8 +120,8 @@ class Location : AppCompatActivity() {
                     val date = Date(ms)
                     val formatter = SimpleDateFormat("HH:mm:ss dd.MM.yyyy", Locale.getDefault())
                     val time = formatter.format(date)
-                    Longitude.text = "$lat"
-                    Latitude.text = "$lon"
+                    Latitude.text = "$lat"
+                    Longitude.text = "$lon"
                     Altitude.text = "$alt"
                     Time.text = "$time"
                     saveToJson(lat, lon, alt, time)
