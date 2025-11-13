@@ -15,8 +15,8 @@
 	│     │  │  ├─ com/
 	│     │  │  │  └─ example/
 	│     │  │  │     └─ mycalculator/
-        │     │	 │  │	     ├─Hub.kt
-        │     │  │  │	     ├─Location.kt
+    │     │	 │  │	     ├─Hub.kt
+    │     │  │  │	     ├─Location.kt
 	│     │  │  │        ├─LocationService.kt
 	│     │  │  │        ├─MainActivity.kt
 	│     │  │  │        └─Mediaplayer
