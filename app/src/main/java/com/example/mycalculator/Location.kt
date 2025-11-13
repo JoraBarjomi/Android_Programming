@@ -17,7 +17,6 @@ import android.os.Looper
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
-import android.content.Context
 
 import androidx.activity.result.contract.ActivityResultContracts
 import android.widget.Button
@@ -29,14 +28,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
-import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
@@ -85,7 +76,7 @@ class Location : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            Toast.makeText(this, "Уведомления получены ✓", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Уведомления получены", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Разреши уведомления", Toast.LENGTH_SHORT).show()
         }
