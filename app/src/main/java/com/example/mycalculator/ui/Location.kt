@@ -16,6 +16,12 @@ import com.example.mycalculator.R
 import com.example.mycalculator.services.LocationUtilites
 import com.example.mycalculator.utils.PermissionLocation
 import com.example.mycalculator.utils.shareJson
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.example.mycalculator.BuildConfig
+import com.yandex.mapkit.MapKit
+import com.yandex.runtime.image.ImageProvider
 
 class Location : AppCompatActivity() {
     private var log_tag = "MAIN_LOCATION"
@@ -30,12 +36,18 @@ class Location : AppCompatActivity() {
     lateinit var ButtonStartService: Button
     lateinit var ButtonStopService: Button
     lateinit var ButtonShareJson: Button
+    lateinit var Map: com.yandex.mapkit.mapview.MapView
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
+        MapKitFactory.initialize(this)
+
         setContentView(R.layout.activity_location)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -49,16 +61,19 @@ class Location : AppCompatActivity() {
         ButtonStartService = findViewById(R.id.btnStartService)
         ButtonStopService = findViewById(R.id.btnStopService)
         ButtonShareJson = findViewById(R.id.btnShareJson)
+        Map = findViewById(R.id.mapview)
 
         Log.e(log_tag, "Запрашиваю разрешения!")
         permissionsRequest = PermissionLocation(this)
         permissionsRequest.givePermissons()
-
-        locationUtils = LocationUtilites(this)
     }
 
     override fun onStart() {
         super.onStart()
+        Map.onStart()
+        MapKitFactory.getInstance().onStart()
+
+        locationUtils = LocationUtilites(this, Map)
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.FOREGROUND_SERVICE_LOCATION, Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS])
@@ -87,5 +102,6 @@ class Location : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        MapKitFactory.getInstance().onStop()
     }
 }

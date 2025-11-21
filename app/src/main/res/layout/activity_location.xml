@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.Location">
 
+
     <TextView
         android:id="@+id/TopText"
         android:layout_width="113dp"
@@ -18,18 +19,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
-
+        app:layout_constraintVertical_bias="0.014" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="407dp"
-        android:layout_height="350dp"
+        android:layout_width="380dp"
+        android:layout_height="277dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TopText">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TopText"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -135,12 +137,12 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnStartService"
-                android:layout_width="0dp"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
@@ -148,7 +150,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnStopService"
-                android:layout_width="0dp"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
@@ -166,7 +168,6 @@
                 android:id="@+id/btnShareJson"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:text="Share json" />
@@ -174,17 +175,24 @@
 
     </LinearLayout>
 
-    <TextClock
-        android:id="@+id/textClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:format24Hour="HH:mm:ss"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="420dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+        app:layout_constraintTop_toTopOf="@+id/TopText"
+        app:layout_constraintVertical_bias="0.007">
+
+        <TextClock
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format24Hour="HH:mm:ss"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+    </com.yandex.mapkit.mapview.MapView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

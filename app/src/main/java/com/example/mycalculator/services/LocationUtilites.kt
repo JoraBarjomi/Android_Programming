@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import com.example.mycalculator.BuildConfig
+import com.example.mycalculator.R
 import com.example.mycalculator.ui.Location
 import com.example.mycalculator.dataclass.DataLocation
 import com.example.mycalculator.utils.PermissionLocation
@@ -17,8 +19,14 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.yandex.mapkit.Animation
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.MapKit
+import com.yandex.runtime.image.ImageProvider
 
-class LocationUtilites (private val activity: Location){
+class LocationUtilites (private val activity: Location, private val map: com.yandex.mapkit.mapview.MapView){
 
     var log_tag = "MAIN_LOCATION"
     var isRunning = false
@@ -27,10 +35,16 @@ class LocationUtilites (private val activity: Location){
     lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var locationRequest: LocationRequest
+    private var placemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
+
+    lateinit var imageProvider: ImageProvider
 
     init {
         permissionsRequest = PermissionLocation(activity)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+
+        imageProvider = ImageProvider.fromResource(activity, R.drawable.ic_location_notification2)
+
         locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
             10000L
@@ -49,6 +63,23 @@ class LocationUtilites (private val activity: Location){
                         activity.Time.text = "${newLocation.ms}"
                         saveToJson(activity, newLocation)
                         Log.e(log_tag, "Новая локация: $${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
+
+                        if (placemark == null) {
+                            placemark = map.map.mapObjects.addPlacemark(Point(newLocation.lat, newLocation.lon)).apply {
+                                setIcon(imageProvider)
+                                opacity = 1f
+                            }
+                        } else {
+                            placemark?.geometry = Point(newLocation.lat, newLocation.lon)
+                        }
+                        map.map.move(
+                            CameraPosition(
+                                Point(newLocation.lat, newLocation.lon),
+                                /* zoom = */ 17.0f,
+                                /* azimuth = */ 150.0f,
+                                /* tilt = */ 30.0f
+                            ), Animation(Animation.Type.SMOOTH, 1f), null
+                        )
                     }
                 } catch (e: Exception) {
                     Log.e(log_tag, "Ошибка обработки локации: ${e.message}")

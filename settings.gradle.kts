@@ -8,6 +8,9 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven {
+            setUrl("https://maven.google.com/")
+        }
         gradlePluginPortal()
     }
 }
@@ -21,4 +24,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "My Calculator"
 include(":app")
- 
