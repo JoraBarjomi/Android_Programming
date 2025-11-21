@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Location">
+    tools:context=".ui.Location">
 
     <TextView
         android:id="@+id/TopText"
@@ -24,10 +24,9 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="407dp"
-        android:layout_height="288dp"
+        android:layout_height="350dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TopText">
@@ -155,6 +154,22 @@
                 android:layout_weight="1"
                 android:enabled="false"
                 android:text="Stop process" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnShareJson"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Share json" />
         </LinearLayout>
 
     </LinearLayout>

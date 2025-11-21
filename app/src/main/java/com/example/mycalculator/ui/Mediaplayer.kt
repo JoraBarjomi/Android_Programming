@@ -1,38 +1,35 @@
-package com.example.mycalculator
+package com.example.mycalculator.ui
 
-import android.Manifest
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_AUDIO
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaMetadataRetriever
-
-import java.io.File
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
-import android.media.MediaPlayer
-import android.widget.Toast
-
-import android.net.Uri
-
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.*
-
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.ImageView
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.mycalculator.R
+import com.example.mycalculator.utils.PermissionMediaplayer
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import java.io.File
 
 class Mediaplayer : AppCompatActivity() {
 
-    private var log_tag : String = "GOSHA_LOG_TAG"
+    private var log_tag : String = "MEDIAPLAYER_TAG"
 
     private var mediaPlayer: MediaPlayer? = null
     private var musicPaths: List<String> = emptyList()
@@ -84,22 +81,8 @@ class Mediaplayer : AppCompatActivity() {
         seekbarVolume = findViewById(R.id.volume)
         seekbarTime = findViewById(R.id.playingBar)
 
-        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
-            val finePermission = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] ?: false
-            val coarsePermission = permissions[Manifest.permission.READ_MEDIA_AUDIO] ?: false
-            if (finePermission || coarsePermission){
-                findMusicFile()
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(this, "Please give permission", Toast.LENGTH_LONG).show()
-            }
-        }
-        requestPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.READ_MEDIA_AUDIO
-            )
-        )
+        val permissionRequest = PermissionMediaplayer(this)
+        permissionRequest.givePermissons()
     }
 
     private fun findMusicFile(){
@@ -130,14 +113,14 @@ class Mediaplayer : AppCompatActivity() {
         }
     }
 
-    fun getTrackInfo(uri: Uri): Triple<String?, String?, android.graphics.Bitmap?> {
+    fun getTrackInfo(uri: Uri): Triple<String?, String?, Bitmap?> {
         metadataRetriever = MediaMetadataRetriever()
         metadataRetriever.setDataSource(applicationContext, uri)
 
         val name = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
         val artist = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
         val imageBytes = metadataRetriever.embeddedPicture
-        val bitmap = imageBytes?.let { android.graphics.BitmapFactory.decodeByteArray(it, 0, it.size) }
+        val bitmap = imageBytes?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 
         return Triple(name, artist, bitmap)
     }
@@ -229,14 +212,16 @@ class Mediaplayer : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        findMusicFile()
+
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
         seekbarVolume.max = maxVolume
         val currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
         seekbarVolume.progress = currVolume
 
-        seekbarVolume.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar,progress: Int, fromUser: Boolean) {
+        seekbarVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -245,8 +230,8 @@ class Mediaplayer : AppCompatActivity() {
             }
         })
 
-        seekbarTime.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar,progress: Int, fromUser: Boolean) {
+        seekbarTime.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if(fromUser){
                     val totalSec = progress / 1000;
                     val min = totalSec / 60

@@ -1,12 +1,10 @@
-package com.example.mycalculator
+package com.example.mycalculator.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.mycalculator.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class Calculator : AppCompatActivity() {
 
     var line = "0"
 

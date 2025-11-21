@@ -1,7 +1,8 @@
-package com.example.mycalculator
+package com.example.mycalculator.ui
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
@@ -12,8 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.mycalculator.ui.Location
+import com.example.mycalculator.ui.Calculator
+import com.example.mycalculator.ui.Mediaplayer
+import com.example.mycalculator.R
 import com.example.mycalculator.databinding.ActivityHubBinding
-
 
 class Hub : AppCompatActivity() {
 
@@ -59,7 +63,7 @@ class Hub : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         binding.calculator.setOnClickListener({
-            val randomIntent = Intent(this, MainActivity::class.java)
+            val randomIntent = Intent(this, Calculator::class.java)
             startActivity(randomIntent)
         });
         binding.mediaplayer.setOnClickListener({
@@ -72,28 +76,20 @@ class Hub : AppCompatActivity() {
         });
 
         themebtn.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 var rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btncalc.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btnmedia.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btnlocation.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btn4.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btn5.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btn6.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btn7.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 btn8.setBackgroundColor(rndColor)
-                rndColor = Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
                 textHub.setTextColor(rndColor)
             }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
         chkBox.setOnClickListener {
             if (chkBox.isChecked){
@@ -104,7 +100,7 @@ class Hub : AppCompatActivity() {
         }
         btn8.setOnClickListener {
             val url = "https://ru.wikipedia.org/wiki/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
-            val browerIntent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+            val browerIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(browerIntent)
         }
     }

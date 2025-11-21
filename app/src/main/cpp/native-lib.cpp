@@ -5,7 +5,7 @@
 #include <jni.h>
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_mycalculator_MainActivity_calculate(
+Java_com_example_mycalculator_Calculator_calculate(
         JNIEnv* env,
         jobject,
         jstring input
@@ -89,7 +89,7 @@ Java_com_example_mycalculator_MainActivity_calculate(
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_mycalculator_MainActivity_procentage(
+Java_com_example_mycalculator_Calculator_procentage(
         JNIEnv* env,
         jobject,
         jstring input

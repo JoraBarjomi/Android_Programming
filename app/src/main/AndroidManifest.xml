@@ -22,18 +22,30 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyCalculator">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
-            android:name=".Location"
+            android:name=".ui.Location"
             android:exported="false" />
-        <service android:name=".LocationService"
+        <service android:name=".services.LocationService"
                  android:enabled="true"
                  android:exported="false"
                  android:foregroundServiceType="location"/>
         <activity
-            android:name=".Mediaplayer"
+            android:name=".ui.Mediaplayer"
             android:exported="false" />
         <activity
-            android:name=".Hub"
+            android:name=".ui.Hub"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.Calculator"
             android:exported="true" />
     </application>
 
