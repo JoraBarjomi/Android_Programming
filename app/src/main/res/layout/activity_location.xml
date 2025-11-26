@@ -19,19 +19,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.014" />
+        app:layout_constraintVertical_bias="0.002" />
+
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/mapview"
+        android:layout_width="405dp"
+        android:layout_height="527dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></com.yandex.mapkit.mapview.MapView>
+
+    <TextClock
+        android:id="@+id/textClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:format24Hour="HH:mm:ss"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/mapview"
+        app:layout_constraintEnd_toEndOf="@+id/mapview"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="380dp"
-        android:layout_height="277dp"
-        android:layout_margin="10dp"
+        android:layout_width="411dp"
+        android:layout_height="276dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/mapview"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TopText"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="15dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -174,25 +198,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <com.yandex.mapkit.mapview.MapView
-        android:id="@+id/mapview"
-        android:layout_width="match_parent"
-        android:layout_height="420dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/TopText"
-        app:layout_constraintVertical_bias="0.007">
-
-        <TextClock
-            android:id="@+id/textClock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:format24Hour="HH:mm:ss"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
-    </com.yandex.mapkit.mapview.MapView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

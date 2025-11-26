@@ -43,7 +43,7 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
         permissionsRequest = PermissionLocation(activity)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
 
-        imageProvider = ImageProvider.fromResource(activity, R.drawable.ic_location_notification2)
+        imageProvider = ImageProvider.fromResource(activity, R.drawable.ic_location_notification3)
 
         locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,

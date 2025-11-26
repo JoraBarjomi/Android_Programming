@@ -1,7 +1,5 @@
 import kotlin.random.Random
-import kotlin.random.nextInt
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class Driver(_name: String, _age: Int) : Human(_name, _age){

@@ -1,8 +1,4 @@
 import kotlin.random.Random
-import kotlin.random.nextInt
-import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 fun main() {
 

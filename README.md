@@ -11,17 +11,35 @@
 	│     │  │  ├─ native-lib.cpp
 	│     │  │
 	│     │  ├─ java/
-	│     │  │  ├─ Movable - lab3/
 	│     │  │  ├─ com/
 	│     │  │  │  └─ example/
-	│     │  │  │     └─ mycalculator/
-    │     │	 │  │	     ├─Hub.kt
-    │     │  │  │	     ├─Location.kt
-	│     │  │  │        ├─LocationService.kt
-	│     │  │  │        ├─MainActivity.kt
-	│     │  │  │        └─Mediaplayer
-	│     │  │  
+	│     │  │  │     ├─ mycalculator/
+	│     │  │  │  	  │	     ├─ dataclass/
+	│	  │	 │	│	  │		 │	 └─ DataLocation.kt\
+	│	  │	 │  │     │		 │
+	│     │  │  │  	  │	     ├─ Movable/
+	│	  │	 │	│	  │		 │	 ├─ Driver.kt
+	│     │  │  │	  │		 │	 ├─ Human.kt
+	│	  │  │	│	  │		 │	 ├─ Main.kt
+   	│	  │	 │	│	  │		 │	 └─ Movable.kt
+	│	  │	 │  │     │		 │
+	│     │  │  │     │		 ├─ services/
+	│     │  │  │  	  │		 │	 ├─ LocationService.kt
+	│     │  │  │  	  │	     │   └─ LocationUtilites.kt
+	│	  │	 │  │     │		 │
+	│     │  │  │  	  │	     ├─ ui/ 
+	│	  │	 │	│	  │		 │	 ├─ Calculator.kt
+	│     │  │  │	  │		 │	 ├─ Hub.kt
+	│	  │  │	│	  │		 │	 ├─ Location.kt
+	│	  │  │	│	  │		 │	 ├─ Mediaplayer.kt
+   	│	  │	 │	│	  │		 │	 └─ Telephony.kt
+	│	  │	 │  │     │		 │
+	│     │  │  │  	  │	     └─ utils/ 
+	│	  │	 │	│	  │		 	 ├─ permissionGiver.kt
+	│     │  │  │	  │		 	 └─ saveToJson.kt
 	│     │  │
 	│     │  ├─ res/
+	│     │  │    ├─ drawable/
+	│     │  │    └─ layout/
 
 

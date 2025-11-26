@@ -17,11 +17,7 @@ import com.example.mycalculator.services.LocationUtilites
 import com.example.mycalculator.utils.PermissionLocation
 import com.example.mycalculator.utils.shareJson
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
 import com.example.mycalculator.BuildConfig
-import com.yandex.mapkit.MapKit
-import com.yandex.runtime.image.ImageProvider
 
 class Location : AppCompatActivity() {
     private var log_tag = "MAIN_LOCATION"
@@ -97,11 +93,11 @@ class Location : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        locationUtils.stopLocationUpdates()
     }
 
     override fun onStop() {
         super.onStop()
+        locationUtils.stopLocationUpdates()
         MapKitFactory.getInstance().onStop()
     }
 }

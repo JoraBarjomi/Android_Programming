@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.mycalculator.ui.Location
 import com.example.mycalculator.ui.Calculator
 import com.example.mycalculator.ui.Mediaplayer
+import com.example.mycalculator.ui.Telephony
 import com.example.mycalculator.R
 import com.example.mycalculator.databinding.ActivityHubBinding
 
@@ -27,7 +28,7 @@ class Hub : AppCompatActivity() {
     private lateinit var btncalc: Button
     private lateinit var btnmedia: Button
     private lateinit var btnlocation: Button
-    private lateinit var btn4: Button
+    private lateinit var btntelephony: Button
     private lateinit var btn5: Button
     private lateinit var btn6: Button
     private lateinit var btn7: Button
@@ -51,7 +52,7 @@ class Hub : AppCompatActivity() {
         btncalc = findViewById<Button>(R.id.calculator)
         btnmedia = findViewById<Button>(R.id.mediaplayer)
         btnlocation = findViewById<Button>(R.id.location)
-        btn4 = findViewById<Button>(R.id.btn4)
+        btntelephony = findViewById<Button>(R.id.telephony)
         btn5 = findViewById<Button>(R.id.btn5)
         btn6 = findViewById<Button>(R.id.btn6)
         btn7 = findViewById<Button>(R.id.btn7)
@@ -74,6 +75,10 @@ class Hub : AppCompatActivity() {
            val randomIntent = Intent(this, Location::class.java)
            startActivity(randomIntent)
         });
+        binding.telephony.setOnClickListener({
+            val randomIntent = Intent(this, Telephony::class.java)
+            startActivity(randomIntent)
+        });
 
         themebtn.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { }
@@ -83,7 +88,7 @@ class Hub : AppCompatActivity() {
                 btncalc.setBackgroundColor(rndColor)
                 btnmedia.setBackgroundColor(rndColor)
                 btnlocation.setBackgroundColor(rndColor)
-                btn4.setBackgroundColor(rndColor)
+                btntelephony.setBackgroundColor(rndColor)
                 btn5.setBackgroundColor(rndColor)
                 btn6.setBackgroundColor(rndColor)
                 btn7.setBackgroundColor(rndColor)
