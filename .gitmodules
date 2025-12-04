@@ -1,0 +1,3 @@
+[submodule "serverPython"]
+	path = serverPython
+	url = https://github.com/JoraBarjomi/serverPython.git
