@@ -29,7 +29,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></com.yandex.mapkit.mapview.MapView>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/conStatus"
+            android:layout_width="match_parent"
+            android:layout_height="99dp"
+            android:gravity="center"
+            android:text=""
+            android:textSize="20sp" />
+
+    </com.yandex.mapkit.mapview.MapView>
 
     <TextClock
         android:id="@+id/textClock"

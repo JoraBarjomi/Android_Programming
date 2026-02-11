@@ -10,14 +10,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mycalculator.R
 import com.example.mycalculator.services.LocationUtilites
 import com.example.mycalculator.utils.PermissionLocation
 import com.example.mycalculator.utils.shareJson
+import com.example.mycalculator.utils.ClientZMQ
 import com.yandex.mapkit.MapKitFactory
 import com.example.mycalculator.BuildConfig
+import com.example.mycalculator.utils.shareJsonServer
 
 class Location : AppCompatActivity() {
     private var log_tag = "MAIN_LOCATION"
@@ -25,6 +28,7 @@ class Location : AppCompatActivity() {
     private lateinit var permissionsRequest: PermissionLocation
     private lateinit var locationUtils: LocationUtilites
 
+    lateinit var ConnectionStatus: TextView
     lateinit var Longitude: TextView
     lateinit var Latitude: TextView
     lateinit var Altitude: TextView
@@ -33,6 +37,9 @@ class Location : AppCompatActivity() {
     lateinit var ButtonStopService: Button
     lateinit var ButtonShareJson: Button
     lateinit var Map: com.yandex.mapkit.mapview.MapView
+
+    lateinit var Client: ClientZMQ
+    var isConnected = false
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +57,7 @@ class Location : AppCompatActivity() {
             insets
         }
 
+        ConnectionStatus = findViewById(R.id.conStatus)
         Longitude = findViewById(R.id.longitude)
         Latitude = findViewById(R.id.latitude)
         Altitude = findViewById(R.id.altitude)
@@ -70,11 +78,25 @@ class Location : AppCompatActivity() {
         MapKitFactory.getInstance().onStart()
 
         locationUtils = LocationUtilites(this, Map)
+
+        Client = ClientZMQ("tcp://192.168.0.130:12345")
+        Log.d(log_tag, "Client is connected: $isConnected")
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.FOREGROUND_SERVICE_LOCATION, Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS])
     override fun onResume() {
         super.onResume()
+
+        isConnected = Client.SetConnection()
+
+        if (isConnected) {
+            ConnectionStatus.text = "Сonnected"
+            ConnectionStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_light))
+        } else {
+            ConnectionStatus.text = "Disconnected"
+            ConnectionStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_light))
+        }
+
         ButtonStartService.setOnClickListener {
             if (permissionsRequest.checkAllPermissons()){
                 Log.e(log_tag, "Запускаю LocationUpdates")
@@ -87,7 +109,15 @@ class Location : AppCompatActivity() {
             locationUtils.stopBackgroundService()
         }
         ButtonShareJson.setOnClickListener {
-            shareJson(this@Location)
+            if (isConnected) {
+
+                shareJson(this@Location)
+                var data = shareJsonServer(this@Location)
+                var replyFromServer = Client.SendData(data)
+                ConnectionStatus.text = replyFromServer
+                ConnectionStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_light))
+
+            }
         }
     }
 
@@ -95,8 +125,16 @@ class Location : AppCompatActivity() {
         super.onPause()
     }
 
-    override fun onStop() {
-        super.onStop()
+//    override fun onStop() {
+//        super.onStop()
+//
+//        locationUtils.stopLocationUpdates()
+//        MapKitFactory.getInstance().onStop()
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Client.CloseConnection()
         locationUtils.stopLocationUpdates()
         MapKitFactory.getInstance().onStop()
     }

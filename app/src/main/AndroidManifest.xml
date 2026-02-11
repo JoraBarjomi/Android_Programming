@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyCalculator">
         <activity
+            android:name=".ui.DataSender"
+            android:exported="false" />
+        <activity
             android:name=".ui.Telephony"
             android:exported="false" />
 

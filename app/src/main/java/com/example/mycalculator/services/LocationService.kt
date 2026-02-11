@@ -123,7 +123,7 @@ class LocationService: Service() {
         return builder.apply {
             setContentTitle("Координаты:")
             setContentText("Lat: %.4f, Lon: %.4f, Alt: %.2f м".format(lat, lon, alt))
-            .setSmallIcon(R.drawable.ic_location_notification2)
+            .setSmallIcon(R.drawable.ic_location_notification3)
             setContentIntent(pendingIntent)
             setOngoing(true)
         }.build()

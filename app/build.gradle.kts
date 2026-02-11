@@ -71,5 +71,5 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.yandex.android:maps.mobile:4.25.0-lite")
-
+    implementation ("org.zeromq:jeromq:0.5.0")
 }

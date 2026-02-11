@@ -50,8 +50,8 @@ fun saveToJson(context: Context, newLocation: DataLocation) {
 }
 
 fun shareJson(context: Context){
-    val file = File(context.filesDir, "locations.json")
 
+    val file = File(context.filesDir, "locations.json")
     var uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
     val intent = Intent(Intent.ACTION_SEND)
@@ -59,4 +59,13 @@ fun shareJson(context: Context){
     intent.putExtra(Intent.EXTRA_STREAM, uri)
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     context.startActivity(Intent.createChooser(intent, "Получить json"))
+
+}
+
+fun shareJsonServer(context: Context): String{
+
+    val file = File(context.filesDir, "locations.json")
+    val data = file.readText()
+    return data
+
 }
