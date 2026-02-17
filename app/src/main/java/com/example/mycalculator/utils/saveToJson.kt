@@ -2,10 +2,19 @@ package com.example.mycalculator.utils
 
 import com.example.mycalculator.dataclass.DataLocation
 
+import android.telephony.CellInfo
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Environment
+import android.telephony.CellInfoCdma
+import android.telephony.CellInfoGsm
+import android.telephony.CellInfoLte
+import android.telephony.CellInfoNr
+import android.telephony.CellInfoTdscdma
+import android.telephony.CellInfoWcdma
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import org.json.JSONArray
 import org.json.JSONObject
@@ -47,6 +56,41 @@ fun saveToJson(context: Context, newLocation: DataLocation) {
         Log.e(log_tag, "Ошибка сохранения во внешнее хранилище: ${e.message}")
         e.printStackTrace()
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.Q)
+fun convertToJson(context: Context, newLocation: DataLocation, imei: String?, cell: List<CellInfo>?): String {
+    val date = Date(newLocation.ms)
+    val formatter = SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.getDefault())
+    val datetime = formatter.format(date)
+
+    var cell_id_lte = ""
+    var signal_strength_lte = ""
+
+    if (cell != null) {
+        for (it in cell) {
+            when (it) {
+                is CellInfoLte -> {
+                    cell_id_lte = "${it.cellIdentity.ci}"
+                    signal_strength_lte = "${it.cellSignalStrength.dbm}"
+                }
+            }
+        }
+    }
+
+    val locationObject = JSONObject().apply {
+        put("imei", imei)
+        put("latitude", newLocation.lat)
+        put("longitude", newLocation.lon)
+        put("altitude", newLocation.alt)
+        put("timeMS", newLocation.ms)
+        put("date", datetime)
+        put("cellIdLte", cell_id_lte)
+        put("signalLte", signal_strength_lte)
+    }
+
+    Log.d(log_tag, "Локация записана в JSON: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
+    return locationObject.toString()
 }
 
 fun shareJson(context: Context){

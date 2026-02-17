@@ -1,6 +1,7 @@
 package com.example.mycalculator.ui
 
 import android.Manifest
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +21,6 @@ import com.example.mycalculator.utils.shareJson
 import com.example.mycalculator.utils.ClientZMQ
 import com.yandex.mapkit.MapKitFactory
 import com.example.mycalculator.BuildConfig
-import com.example.mycalculator.utils.shareJsonServer
 
 class Location : AppCompatActivity() {
     private var log_tag = "MAIN_LOCATION"
@@ -38,9 +38,6 @@ class Location : AppCompatActivity() {
     lateinit var ButtonShareJson: Button
     lateinit var Map: com.yandex.mapkit.mapview.MapView
 
-    lateinit var Client: ClientZMQ
-    var isConnected = false
-
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,15 +53,13 @@ class Location : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        ConnectionStatus = findViewById(R.id.conStatus)
+        ConnectionStatus = findViewById(R.id.serverStatus)
         Longitude = findViewById(R.id.longitude)
         Latitude = findViewById(R.id.latitude)
         Altitude = findViewById(R.id.altitude)
         Time = findViewById(R.id.clock)
         ButtonStartService = findViewById(R.id.btnStartService)
         ButtonStopService = findViewById(R.id.btnStopService)
-        ButtonShareJson = findViewById(R.id.btnShareJson)
         Map = findViewById(R.id.mapview)
 
         Log.e(log_tag, "Запрашиваю разрешения!")
@@ -76,48 +71,27 @@ class Location : AppCompatActivity() {
         super.onStart()
         Map.onStart()
         MapKitFactory.getInstance().onStart()
-
         locationUtils = LocationUtilites(this, Map)
-
-        Client = ClientZMQ("tcp://192.168.0.130:12345")
-        Log.d(log_tag, "Client is connected: $isConnected")
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.FOREGROUND_SERVICE_LOCATION, Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS])
     override fun onResume() {
         super.onResume()
 
-        isConnected = Client.SetConnection()
-
-        if (isConnected) {
-            ConnectionStatus.text = "Сonnected"
-            ConnectionStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_light))
-        } else {
-            ConnectionStatus.text = "Disconnected"
-            ConnectionStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_light))
-        }
-
         ButtonStartService.setOnClickListener {
             if (permissionsRequest.checkAllPermissons()){
                 Log.e(log_tag, "Запускаю LocationUpdates")
                 locationUtils.startLocationUpdates()
                 locationUtils.startBackgroundService()
-                ButtonShareJson.isEnabled = true
+                ConnectionStatus.text = "Сonnected"
+                ConnectionStatus.setTextColor(Color.GREEN)
+                //ButtonShareJson.isEnabled = true
             }
         }
         ButtonStopService.setOnClickListener {
             locationUtils.stopBackgroundService()
-        }
-        ButtonShareJson.setOnClickListener {
-            if (isConnected) {
-
-                shareJson(this@Location)
-                var data = shareJsonServer(this@Location)
-                var replyFromServer = Client.SendData(data)
-                ConnectionStatus.text = replyFromServer
-                ConnectionStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_light))
-
-            }
+            ConnectionStatus.text = "Disconnected"
+            ConnectionStatus.setTextColor(Color.RED)
         }
     }
 
@@ -125,16 +99,14 @@ class Location : AppCompatActivity() {
         super.onPause()
     }
 
-//    override fun onStop() {
-//        super.onStop()
-//
-//        locationUtils.stopLocationUpdates()
-//        MapKitFactory.getInstance().onStop()
-//    }
+    override fun onStop() {
+        super.onStop()
+        locationUtils.stopLocationUpdates()
+        MapKitFactory.getInstance().onStop()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
-        Client.CloseConnection()
         locationUtils.stopLocationUpdates()
         MapKitFactory.getInstance().onStop()
     }

@@ -23,21 +23,13 @@
 
     <com.yandex.mapkit.mapview.MapView
         android:id="@+id/mapview"
-        android:layout_width="405dp"
-        android:layout_height="527dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="408dp"
+        android:layout_height="566dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/conStatus"
-            android:layout_width="match_parent"
-            android:layout_height="99dp"
-            android:gravity="center"
-            android:text=""
-            android:textSize="20sp" />
 
     </com.yandex.mapkit.mapview.MapView>
 
@@ -56,21 +48,46 @@
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="411dp"
-        android:layout_height="276dp"
+        android:layout_width="408dp"
+        android:layout_height="264dp"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/mapview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@id/mapview"
+        app:layout_constraintVertical_bias="0.904">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/labelServerStatus"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="Server:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/serverStatus"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text=""
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -95,7 +112,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -120,7 +137,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -145,7 +162,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="2dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -171,7 +188,7 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
@@ -186,7 +203,7 @@
                 android:id="@+id/btnStopService"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="2dp"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:text="Stop process" />
@@ -196,16 +213,7 @@
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnShareJson"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:enabled="false"
-                android:text="Share json" />
-        </LinearLayout>
+            android:orientation="horizontal" />
 
     </LinearLayout>
 

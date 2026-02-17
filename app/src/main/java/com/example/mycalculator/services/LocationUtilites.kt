@@ -1,14 +1,15 @@
 package com.example.mycalculator.services
 
-import com.example.mycalculator.utils.saveToJson
-import com.example.mycalculator.utils.shareJson
-
+import android.provider.Settings
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Looper
+import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.example.mycalculator.BuildConfig
+import android.os.*
+import androidx.annotation.RequiresApi
 import com.example.mycalculator.R
 import com.example.mycalculator.ui.Location
 import com.example.mycalculator.dataclass.DataLocation
@@ -25,6 +26,8 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.MapKit
 import com.yandex.runtime.image.ImageProvider
+import com.example.mycalculator.utils.ClientZMQ
+import com.example.mycalculator.utils.convertToJson
 
 class LocationUtilites (private val activity: Location, private val map: com.yandex.mapkit.mapview.MapView){
 
@@ -36,8 +39,12 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
     private lateinit var locationCallback: LocationCallback
     private var locationRequest: LocationRequest
     private var placemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
-
+    private var Client: ClientZMQ
+    var isConnected = false
     lateinit var imageProvider: ImageProvider
+    private lateinit var telephonyManager: TelephonyManager
+
+    var addr = "tcp://192.168.0.130:12345"
 
     init {
         permissionsRequest = PermissionLocation(activity)
@@ -46,12 +53,16 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
         imageProvider = ImageProvider.fromResource(activity, R.drawable.ic_location_notification3)
 
         locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY,
+            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
             10000L
-        ).setMinUpdateIntervalMillis(5000L)
+        ).setMinUpdateIntervalMillis(10000L)
             .build()
 
+        Client = ClientZMQ(addr)
+
         locationCallback = object : LocationCallback() {
+            @RequiresApi(Build.VERSION_CODES.Q)
+            @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
                 try {
@@ -61,8 +72,25 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                         activity.Longitude.text = "${newLocation.lon}"
                         activity.Altitude.text = "${newLocation.alt}"
                         activity.Time.text = "${newLocation.ms}"
-                        saveToJson(activity, newLocation)
-                        Log.e(log_tag, "Новая локация: $${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
+
+                        if (isConnected) {
+                            telephonyManager = activity.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                            val cell = try {
+                                telephonyManager.allCellInfo
+                            } catch (e: SecurityException) {
+                                emptyList()
+                            }
+
+                            val imei = Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
+                            var dataJson = convertToJson(activity, newLocation, imei, cell)
+                            Log.d(log_tag, "Sending data: $dataJson")
+                            var replyFromServer = Client.SendData(dataJson)
+                            Log.d(log_tag, "Reply from server: $replyFromServer")
+                        } else {
+                            Log.d(log_tag, "Client is not connected: $isConnected")
+                        }
+
+                        Log.e(log_tag, "New location: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
 
                         if (placemark == null) {
                             placemark = map.map.mapObjects.addPlacemark(Point(newLocation.lat, newLocation.lon)).apply {
@@ -78,7 +106,7 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                                 /* zoom = */ 17.0f,
                                 /* azimuth = */ 150.0f,
                                 /* tilt = */ 30.0f
-                            ), Animation(Animation.Type.SMOOTH, 1f), null
+                            ), Animation(Animation.Type.SMOOTH, 3f), null
                         )
                     }
                 } catch (e: Exception) {
@@ -113,7 +141,8 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                 val serviceIntent = Intent(activity, LocationService::class.java)
                 activity.startForegroundService(serviceIntent)
             }
-            Log.e(log_tag, "Запустил сервис в фоне!")
+            Log.d(log_tag, "Запустил сервис в фоне!")
+            isConnected = Client.SetConnection()
             isRunning = true
             activity.ButtonStartService.isEnabled = false
             activity.ButtonStopService.isEnabled = true
@@ -125,6 +154,8 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
             val serviceIntent = Intent(activity, LocationService::class.java)
             activity.stopService(serviceIntent)
             Log.e(log_tag, "Остановил сервис в фоне!")
+            Client.CloseConnection()
+            Log.d(log_tag, "Close connection: $isConnected")
             isRunning = false
             activity.ButtonStartService.isEnabled = true
             activity.ButtonStopService.isEnabled = false
