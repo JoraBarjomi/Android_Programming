@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -21,6 +22,7 @@ import com.example.mycalculator.utils.shareJson
 import com.example.mycalculator.utils.ClientZMQ
 import com.yandex.mapkit.MapKitFactory
 import com.example.mycalculator.BuildConfig
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class Location : AppCompatActivity() {
     private var log_tag = "MAIN_LOCATION"
@@ -36,6 +38,7 @@ class Location : AppCompatActivity() {
     lateinit var ButtonStartService: Button
     lateinit var ButtonStopService: Button
     lateinit var ButtonShareJson: Button
+    lateinit var Footer: FrameLayout
     lateinit var Map: com.yandex.mapkit.mapview.MapView
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -45,8 +48,13 @@ class Location : AppCompatActivity() {
 
         MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
         MapKitFactory.initialize(this)
-
         setContentView(R.layout.activity_location)
+
+        Footer = findViewById(R.id.bottom_sheet)
+        BottomSheetBehavior.from(Footer).apply {
+            peekHeight=350
+            this.state= BottomSheetBehavior.STATE_COLLAPSED
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -108,6 +116,5 @@ class Location : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         locationUtils.stopLocationUpdates()
-        MapKitFactory.getInstance().onStop()
     }
 }

@@ -45,6 +45,7 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
     private lateinit var telephonyManager: TelephonyManager
 
     var addr = "tcp://192.168.0.130:12345"
+//    var addr = "tcp://172.20.10.8:12345"
 
     init {
         permissionsRequest = PermissionLocation(activity)
@@ -53,9 +54,9 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
         imageProvider = ImageProvider.fromResource(activity, R.drawable.ic_location_notification3)
 
         locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            Priority.PRIORITY_HIGH_ACCURACY,
             10000L
-        ).setMinUpdateIntervalMillis(10000L)
+        ).setMinUpdateIntervalMillis(5000L)
             .build()
 
         Client = ClientZMQ(addr)
@@ -67,7 +68,7 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                 super.onLocationResult(p0)
                 try {
                     for (location in p0.locations) {
-                        val newLocation = DataLocation(location.latitude, location.longitude,location.altitude, location.time)
+                        val newLocation = DataLocation(location.latitude, location.longitude,location.altitude, location.time, location.accuracy)
                         activity.Latitude.text = "${newLocation.lat}"
                         activity.Longitude.text = "${newLocation.lon}"
                         activity.Altitude.text = "${newLocation.alt}"

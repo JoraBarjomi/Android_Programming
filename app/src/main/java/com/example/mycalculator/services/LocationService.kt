@@ -71,7 +71,8 @@ class LocationService: Service() {
                             location.latitude,
                             location.longitude,
                             location.altitude,
-                            location.time
+                            location.time,
+                            location.accuracy
                         )
                         Log.d(log_tag, "Новая локация: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
                         saveToJson(this@LocationService, newLocation)

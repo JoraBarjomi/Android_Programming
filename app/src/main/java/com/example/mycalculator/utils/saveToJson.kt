@@ -1,18 +1,15 @@
 package com.example.mycalculator.utils
 
 import com.example.mycalculator.dataclass.DataLocation
+import com.example.mycalculator.dataclass.CellInfoLteData
+import com.example.mycalculator.dataclass.CellInfoGSMData
 
 import android.telephony.CellInfo
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Environment
-import android.telephony.CellInfoCdma
 import android.telephony.CellInfoGsm
 import android.telephony.CellInfoLte
-import android.telephony.CellInfoNr
-import android.telephony.CellInfoTdscdma
-import android.telephony.CellInfoWcdma
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
@@ -50,7 +47,6 @@ fun saveToJson(context: Context, newLocation: DataLocation) {
             it.write(jsonArray.toString(4))
         }
         Log.d(log_tag, "Локация записана в JSON: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
-        //Log.d(log_tag, "Путь к файлу: ${file.absolutePath}")
 
     } catch (e: Exception) {
         Log.e(log_tag, "Ошибка сохранения во внешнее хранилище: ${e.message}")
@@ -64,15 +60,43 @@ fun convertToJson(context: Context, newLocation: DataLocation, imei: String?, ce
     val formatter = SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.getDefault())
     val datetime = formatter.format(date)
 
-    var cell_id_lte = ""
-    var signal_strength_lte = ""
+    var lte = mutableListOf<CellInfoLteData>()
+    var gsm = mutableListOf<CellInfoGSMData>()
 
     if (cell != null) {
         for (it in cell) {
             when (it) {
-                is CellInfoLte -> {
-                    cell_id_lte = "${it.cellIdentity.ci}"
-                    signal_strength_lte = "${it.cellSignalStrength.dbm}"
+                is CellInfoLte -> (
+                    lte.add(CellInfoLteData(
+                        it.cellIdentity.ci,
+                        it.cellIdentity.pci,
+                        it.isRegistered,
+                        it.cellIdentity.bandwidth,
+                        it.cellIdentity.earfcn,
+                        it.cellIdentity.mccString,
+                        it.cellIdentity.mncString,
+                        it.cellIdentity.tac,
+                        it.cellSignalStrength.asuLevel,
+                        it.cellSignalStrength.cqi,
+                        it.cellSignalStrength.rsrp,
+                        it.cellSignalStrength.rsrq,
+                        it.cellSignalStrength.rssi,
+                        it.cellSignalStrength.rssnr,
+                        it.cellSignalStrength.dbm,
+                        it.cellSignalStrength.timingAdvance))
+                )
+                is CellInfoGsm -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    gsm.add(CellInfoGSMData(
+                        it.cellIdentity.cid,
+                        it.cellIdentity.bsic,
+                        it.cellIdentity.arfcn,
+                        it.cellIdentity.lac,
+                        it.cellIdentity.mccString,
+                        it.cellIdentity.mncString,
+                        it.cellIdentity.psc.toString(),
+                        it.cellSignalStrength.dbm,
+                        it.cellSignalStrength.rssi,
+                        it.cellSignalStrength.timingAdvance))
                 }
             }
         }
@@ -83,10 +107,11 @@ fun convertToJson(context: Context, newLocation: DataLocation, imei: String?, ce
         put("latitude", newLocation.lat)
         put("longitude", newLocation.lon)
         put("altitude", newLocation.alt)
+        put("accuracy", newLocation.accuracy)
         put("timeMS", newLocation.ms)
         put("date", datetime)
-        put("cellIdLte", cell_id_lte)
-        put("signalLte", signal_strength_lte)
+        put("cellGSM", gsm)
+        put("cellLte", lte)
     }
 
     Log.d(log_tag, "Локация записана в JSON: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
