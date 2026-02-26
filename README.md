@@ -10,7 +10,7 @@
 	         │  ├─ CMakeLists.txt
 	         │  └─ native-lib.cpp
 	         │
-	         └─ java
+	         ├─ java
 	         │  └─ com
 	         │     └─ example
 	         │        └─ mycalculator
