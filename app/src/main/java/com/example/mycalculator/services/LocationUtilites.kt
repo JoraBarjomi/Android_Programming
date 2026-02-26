@@ -39,13 +39,14 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
     private lateinit var locationCallback: LocationCallback
     private var locationRequest: LocationRequest
     private var placemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
-    private var Client: ClientZMQ
+    lateinit var Client: ClientZMQ
     var isConnected = false
     lateinit var imageProvider: ImageProvider
     private lateinit var telephonyManager: TelephonyManager
 
-    var addr = "tcp://192.168.0.130:12345"
+//    var addr = "tcp://192.168.0.130:12345"
 //    var addr = "tcp://172.20.10.8:12345"
+    var addr = "tcp://"
 
     init {
         permissionsRequest = PermissionLocation(activity)
@@ -58,8 +59,6 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
             10000L
         ).setMinUpdateIntervalMillis(5000L)
             .build()
-
-        Client = ClientZMQ(addr)
 
         locationCallback = object : LocationCallback() {
             @RequiresApi(Build.VERSION_CODES.Q)
@@ -125,6 +124,9 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                 locationCallback,
                 Looper.getMainLooper()
             )
+            if (addr != "tcp://"){
+                Client = ClientZMQ(addr)
+            }
             Log.d(log_tag, "Обновления локации запущены")
         } catch (e: SecurityException) {
             Log.e(log_tag, "Нет разрешения на доступ к локации: ${e.message}")
@@ -160,6 +162,14 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
             isRunning = false
             activity.ButtonStartService.isEnabled = true
             activity.ButtonStopService.isEnabled = false
+        }
+    }
+
+    fun setIpAddress(newaddr : String) {
+        if (addr == "tcp://") {
+            addr += newaddr
+        } else {
+            addr = "tcp://" + newaddr
         }
     }
 

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -37,7 +38,8 @@ class Location : AppCompatActivity() {
     lateinit var Time: TextView
     lateinit var ButtonStartService: Button
     lateinit var ButtonStopService: Button
-    lateinit var ButtonShareJson: Button
+    lateinit var FrameIpAddr: EditText
+    lateinit var ButtonSaveIp: Button
     lateinit var Footer: FrameLayout
     lateinit var Map: com.yandex.mapkit.mapview.MapView
 
@@ -68,6 +70,8 @@ class Location : AppCompatActivity() {
         Time = findViewById(R.id.clock)
         ButtonStartService = findViewById(R.id.btnStartService)
         ButtonStopService = findViewById(R.id.btnStopService)
+        FrameIpAddr = findViewById(R.id.frameIpAddr)
+        ButtonSaveIp = findViewById(R.id.btnSaveIp)
         Map = findViewById(R.id.mapview)
 
         Log.e(log_tag, "Запрашиваю разрешения!")
@@ -80,6 +84,7 @@ class Location : AppCompatActivity() {
         Map.onStart()
         MapKitFactory.getInstance().onStart()
         locationUtils = LocationUtilites(this, Map)
+        ButtonStartService.isEnabled = false
     }
 
     @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.FOREGROUND_SERVICE_LOCATION, Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS])
@@ -101,6 +106,13 @@ class Location : AppCompatActivity() {
             ConnectionStatus.text = "Disconnected"
             ConnectionStatus.setTextColor(Color.RED)
         }
+
+        ButtonSaveIp.setOnClickListener {
+            ButtonStartService.isEnabled = true
+            var addr = FrameIpAddr.text
+            locationUtils.setIpAddress(addr.toString())
+        }
+
     }
 
     override fun onPause() {

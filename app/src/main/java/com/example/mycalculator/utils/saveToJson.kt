@@ -1,5 +1,6 @@
 package com.example.mycalculator.utils
 
+import android.R
 import com.example.mycalculator.dataclass.DataLocation
 import com.example.mycalculator.dataclass.CellInfoLteData
 import com.example.mycalculator.dataclass.CellInfoGSMData
@@ -60,45 +61,54 @@ fun convertToJson(context: Context, newLocation: DataLocation, imei: String?, ce
     val formatter = SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.getDefault())
     val datetime = formatter.format(date)
 
-    var lte = mutableListOf<CellInfoLteData>()
-    var gsm = mutableListOf<CellInfoGSMData>()
+    var lteJsonArray = JSONArray()
+    var gsmJsonArray = JSONArray()
+    var isReg: Boolean = false
+    var cidIsReg: Int = 0
 
     if (cell != null) {
         for (it in cell) {
-            when (it) {
-                is CellInfoLte -> (
-                    lte.add(CellInfoLteData(
-                        it.cellIdentity.ci,
-                        it.cellIdentity.pci,
-                        it.isRegistered,
-                        it.cellIdentity.bandwidth,
-                        it.cellIdentity.earfcn,
-                        it.cellIdentity.mccString,
-                        it.cellIdentity.mncString,
-                        it.cellIdentity.tac,
-                        it.cellSignalStrength.asuLevel,
-                        it.cellSignalStrength.cqi,
-                        it.cellSignalStrength.rsrp,
-                        it.cellSignalStrength.rsrq,
-                        it.cellSignalStrength.rssi,
-                        it.cellSignalStrength.rssnr,
-                        it.cellSignalStrength.dbm,
-                        it.cellSignalStrength.timingAdvance))
-                )
-                is CellInfoGsm -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    gsm.add(CellInfoGSMData(
-                        it.cellIdentity.cid,
-                        it.cellIdentity.bsic,
-                        it.cellIdentity.arfcn,
-                        it.cellIdentity.lac,
-                        it.cellIdentity.mccString,
-                        it.cellIdentity.mncString,
-                        it.cellIdentity.psc.toString(),
-                        it.cellSignalStrength.dbm,
-                        it.cellSignalStrength.rssi,
-                        it.cellSignalStrength.timingAdvance))
+                if (it is CellInfoLte) {
+                   val cellObject = JSONObject().apply {
+                       if(it.isRegistered) {
+                           isReg = it.isRegistered
+                           cidIsReg = it.cellIdentity.ci
+                       }
+                        put("ci", it.cellIdentity.ci)
+                        put("pci", it.cellIdentity.pci)
+                        put("bandwidth", it.cellIdentity.bandwidth)
+                        put("earfcn", it.cellIdentity.earfcn)
+                        put("mcc", it.cellIdentity.mccString ?: "")
+                        put("mnc", it.cellIdentity.mncString ?: "")
+                        put("tac", it.cellIdentity.tac)
+                        put("asuLevel", it.cellSignalStrength.asuLevel)
+                        put("cqi", it.cellSignalStrength.cqi)
+                        put("rsrp", it.cellSignalStrength.rsrp)
+                        put("rsrq", it.cellSignalStrength.rsrq)
+                        put("rssi", it.cellSignalStrength.rssi)
+                        put("rssnr", it.cellSignalStrength.rssnr)
+                        put("dbm", it.cellSignalStrength.dbm)
+                        put("timingAdvance", it.cellSignalStrength.timingAdvance)
+                    }
+                    lteJsonArray.put(cellObject)
                 }
-            }
+                if (it is CellInfoGsm) {
+                    val cellObject = JSONObject().apply {
+                        put("cid", it.cellIdentity.cid)
+                        put("bsic", it.cellIdentity.bsic)
+                        put("arfcn", it.cellIdentity.arfcn)
+                        put("lac", it.cellIdentity.lac)
+                        put("mccString", it.cellIdentity.mccString)
+                        put("mncString", it.cellIdentity.mncString)
+                        put("psc", it.cellIdentity.psc.toString())
+                        put("dbm", it.cellSignalStrength.dbm)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            put("rssi", it.cellSignalStrength.rssi)
+                        }
+                        put("timingAdvance", it.cellSignalStrength.timingAdvance)
+                    }
+                    gsmJsonArray.put(cellObject)
+                }
         }
     }
 
@@ -109,13 +119,19 @@ fun convertToJson(context: Context, newLocation: DataLocation, imei: String?, ce
         put("altitude", newLocation.alt)
         put("accuracy", newLocation.accuracy)
         put("timeMS", newLocation.ms)
+        put("cidIsReg", cidIsReg)
+        put("IsReg", isReg)
         put("date", datetime)
-        put("cellGSM", gsm)
-        put("cellLte", lte)
+    }
+
+    val finalJson = JSONObject().apply {
+        put("locationInfo", locationObject)
+        put("cellGSM", gsmJsonArray)
+        put("cellLte", lteJsonArray)
     }
 
     Log.d(log_tag, "Локация записана в JSON: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
-    return locationObject.toString()
+    return finalJson.toString()
 }
 
 fun shareJson(context: Context){
