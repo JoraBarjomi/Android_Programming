@@ -15,7 +15,7 @@
 	         │     └─ example
 	         │        └─ mycalculator
 	         │     	  	     ├─ dataclass
-	 	   	 │	 	  		 │	 └─ DataLocation.kt\
+	 	   	 │	 	  		 │	 └─ DataLocation.kt
 	 	   	 │        		 │
 	         │     	  	     ├─ Movable
 	 	  	 │	 	  		 │	 ├─ Driver.kt
