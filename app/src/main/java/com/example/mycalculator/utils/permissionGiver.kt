@@ -18,7 +18,7 @@ class PermissionLocation(private val activity: AppCompatActivity) {
         val phoneStatePermission = permissions[Manifest.permission.READ_PHONE_STATE] ?: false
 
         if (finePermission && coarsePermission && phoneStatePermission) {
-            Toast.makeText(activity, "Локация получена", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(activity, "Локация получена", Toast.LENGTH_SHORT).show()
             backgroundLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
     }
@@ -27,7 +27,7 @@ class PermissionLocation(private val activity: AppCompatActivity) {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            Toast.makeText(activity, "Фоновая локация получена", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(activity, "Фоновая локация получена", Toast.LENGTH_SHORT).show()
         }
         notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
@@ -36,7 +36,7 @@ class PermissionLocation(private val activity: AppCompatActivity) {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            Toast.makeText(activity, "Уведомления получены", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(activity, "Уведомления получены", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -70,7 +70,7 @@ class PermissionMediaplayer(private val activity: Mediaplayer) {
         val audioPermission = permissions[Manifest.permission.READ_MEDIA_AUDIO] ?: false
 
         if (storagePermission && audioPermission) {
-            Toast.makeText(activity, "Локация получена", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(activity, "Локация получена", Toast.LENGTH_SHORT).show()
         }
     }
 

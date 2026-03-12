@@ -23,7 +23,8 @@ import java.util.Date
 import java.util.Locale
 
 val log_tag = "SAVEFUNC"
-fun saveToJson(context: Context, newLocation: DataLocation) {
+@RequiresApi(Build.VERSION_CODES.P)
+fun saveToJson(context: Context, newLocation: DataLocation, imei: String?, cell: List<CellInfo>?) {
     try {
         val file = File(context.filesDir, "locations.json")
         if (!file.exists()) {
@@ -31,19 +32,84 @@ fun saveToJson(context: Context, newLocation: DataLocation) {
             file.writeText("[]")
         }
 
+        val jsonArray = JSONArray(file.readText())
+
         val date = Date(newLocation.ms)
         val formatter = SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.getDefault())
         val datetime = formatter.format(date)
 
-        val jsonArray = JSONArray(file.readText())
+        var lteJsonArray = JSONArray()
+        var gsmJsonArray = JSONArray()
+        var isReg: Boolean = false
+        var cidIsReg: Int = 0
+
+        if (cell != null) {
+            for (it in cell) {
+                if (it is CellInfoLte) {
+                    val cellObject = JSONObject().apply {
+                        if(it.isRegistered) {
+                            isReg = it.isRegistered
+                            cidIsReg = it.cellIdentity.ci
+                        }
+                        put("ci", it.cellIdentity.ci)
+                        put("pci", it.cellIdentity.pci)
+                        put("bandwidth", it.cellIdentity.bandwidth)
+                        put("earfcn", it.cellIdentity.earfcn)
+                        put("mcc", it.cellIdentity.mccString ?: "")
+                        put("mnc", it.cellIdentity.mncString ?: "")
+                        put("tac", it.cellIdentity.tac)
+                        put("asuLevel", it.cellSignalStrength.asuLevel)
+                        put("cqi", it.cellSignalStrength.cqi)
+                        put("rsrp", it.cellSignalStrength.rsrp)
+                        put("rsrq", it.cellSignalStrength.rsrq)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            put("rssi", it.cellSignalStrength.rssi)
+                        }
+                        put("rssnr", it.cellSignalStrength.rssnr)
+                        put("dbm", it.cellSignalStrength.dbm)
+                        put("timingAdvance", it.cellSignalStrength.timingAdvance)
+                    }
+                    lteJsonArray.put(cellObject)
+                }
+                if (it is CellInfoGsm) {
+                    val cellObject = JSONObject().apply {
+                        put("cid", it.cellIdentity.cid)
+                        put("bsic", it.cellIdentity.bsic)
+                        put("arfcn", it.cellIdentity.arfcn)
+                        put("lac", it.cellIdentity.lac)
+                        put("mccString", it.cellIdentity.mccString)
+                        put("mncString", it.cellIdentity.mncString)
+                        put("psc", it.cellIdentity.psc.toString())
+                        put("dbm", it.cellSignalStrength.dbm)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            put("rssi", it.cellSignalStrength.rssi)
+                        }
+                        put("timingAdvance", it.cellSignalStrength.timingAdvance)
+                    }
+                    gsmJsonArray.put(cellObject)
+                }
+            }
+        }
+
         val locationObject = JSONObject().apply {
+            put("imei", imei)
             put("latitude", newLocation.lat)
             put("longitude", newLocation.lon)
             put("altitude", newLocation.alt)
+            put("accuracy", newLocation.accuracy)
             put("timeMS", newLocation.ms)
+            put("cidIsReg", cidIsReg)
+            put("IsReg", isReg)
             put("date", datetime)
         }
-        jsonArray.put(locationObject)
+
+        val finalJson = JSONObject().apply {
+            put("locationInfo", locationObject)
+            put("cellGSM", gsmJsonArray)
+            put("cellLte", lteJsonArray)
+        }
+
+        jsonArray.put(finalJson)
         FileWriter(file).use {
             it.write(jsonArray.toString(4))
         }

@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import com.example.mycalculator.R
 import com.example.mycalculator.ui.Location
 import com.example.mycalculator.dataclass.DataLocation
+import com.example.mycalculator.services.LocationUtilites
 import com.example.mycalculator.utils.PermissionLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -28,6 +29,7 @@ import com.yandex.mapkit.MapKit
 import com.yandex.runtime.image.ImageProvider
 import com.example.mycalculator.utils.ClientZMQ
 import com.example.mycalculator.utils.convertToJson
+import com.example.mycalculator.utils.saveToJson
 
 class LocationUtilites (private val activity: Location, private val map: com.yandex.mapkit.mapview.MapView){
 
@@ -39,13 +41,7 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
     private lateinit var locationCallback: LocationCallback
     private var locationRequest: LocationRequest
     private var placemark: com.yandex.mapkit.map.PlacemarkMapObject? = null
-    lateinit var Client: ClientZMQ
-    var isConnected = false
     lateinit var imageProvider: ImageProvider
-    private lateinit var telephonyManager: TelephonyManager
-
-//    var addr = "tcp://192.168.0.130:12345"
-//    var addr = "tcp://172.20.10.8:12345"
     var addr = "tcp://"
 
     init {
@@ -72,26 +68,6 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                         activity.Longitude.text = "${newLocation.lon}"
                         activity.Altitude.text = "${newLocation.alt}"
                         activity.Time.text = "${newLocation.ms}"
-
-                        if (isConnected) {
-                            telephonyManager = activity.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-                            val cell = try {
-                                telephonyManager.allCellInfo
-                            } catch (e: SecurityException) {
-                                emptyList()
-                            }
-
-                            val imei = Settings.Secure.getString(activity.contentResolver, Settings.Secure.ANDROID_ID)
-                            var dataJson = convertToJson(activity, newLocation, imei, cell)
-                            Log.d(log_tag, "Sending data: $dataJson")
-                            var replyFromServer = Client.SendData(dataJson)
-                            Log.d(log_tag, "Reply from server: $replyFromServer")
-                        } else {
-                            Log.d(log_tag, "Client is not connected: $isConnected")
-                        }
-
-                        Log.e(log_tag, "New location: ${newLocation.lat}, ${newLocation.lon}, ${newLocation.alt}")
-
                         if (placemark == null) {
                             placemark = map.map.mapObjects.addPlacemark(Point(newLocation.lat, newLocation.lon)).apply {
                                 setIcon(imageProvider)
@@ -106,7 +82,7 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                                 /* zoom = */ 17.0f,
                                 /* azimuth = */ 150.0f,
                                 /* tilt = */ 30.0f
-                            ), Animation(Animation.Type.SMOOTH, 3f), null
+                            ), Animation(Animation.Type.SMOOTH, 2f), null
                         )
                     }
                 } catch (e: Exception) {
@@ -124,9 +100,6 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                 locationCallback,
                 Looper.getMainLooper()
             )
-            if (addr != "tcp://"){
-                Client = ClientZMQ(addr)
-            }
             Log.d(log_tag, "Обновления локации запущены")
         } catch (e: SecurityException) {
             Log.e(log_tag, "Нет разрешения на доступ к локации: ${e.message}")
@@ -145,32 +118,19 @@ class LocationUtilites (private val activity: Location, private val map: com.yan
                 activity.startForegroundService(serviceIntent)
             }
             Log.d(log_tag, "Запустил сервис в фоне!")
-            isConnected = Client.SetConnection()
             isRunning = true
             activity.ButtonStartService.isEnabled = false
             activity.ButtonStopService.isEnabled = true
         }
     }
-
     fun stopBackgroundService(){
         if (isRunning){
             val serviceIntent = Intent(activity, LocationService::class.java)
             activity.stopService(serviceIntent)
             Log.e(log_tag, "Остановил сервис в фоне!")
-            Client.CloseConnection()
-            Log.d(log_tag, "Close connection: $isConnected")
             isRunning = false
             activity.ButtonStartService.isEnabled = true
             activity.ButtonStopService.isEnabled = false
         }
     }
-
-    fun setIpAddress(newaddr : String) {
-        if (addr == "tcp://") {
-            addr += newaddr
-        } else {
-            addr = "tcp://" + newaddr
-        }
-    }
-
 }

@@ -240,6 +240,14 @@
                     android:layout_weight="1"
                     android:text="Save ip address" />
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnShareJson"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:text="Share Json" />
+
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
